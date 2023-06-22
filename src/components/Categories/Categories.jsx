@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 const Categories = ({ title, products = [], amount }) => {
   const list = products.filter((_, i) => i < amount);
-  console.log(list);
 
   return (
     <section className={styles.section}>
