@@ -79,6 +79,11 @@ body {
     flex-wrap: wrap;
     gap: 20px;
   }
+  .row-container {
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+  }
   
   section {
     background: var(--dark);

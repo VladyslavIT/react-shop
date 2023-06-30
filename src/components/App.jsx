@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
+import { getCategories } from 'redux/categories/categoriesSlice';
+import { getProducts } from 'redux/products/productsSlice';
+
 import AppRoutes from './Routes/Routes';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import Sidebar from './Sidebar/Sidebar';
-import { useDispatch } from 'react-redux';
-import { getCategories } from 'redux/categories/categoriesSlice';
-import { getProducts } from 'redux/products/productsSlice';
 
 const App = () => {
   const dispatch = useDispatch();
+
+  const location = useLocation();
+
+  const isRowContainer = location.pathname.startsWith('/products/');
 
   useEffect(() => {
     dispatch(getCategories());
@@ -18,7 +26,7 @@ const App = () => {
   return (
     <div className="app">
       <Header />
-      <div className="container">
+      <div className={isRowContainer ? 'row-container' : 'container'}>
         <Sidebar />
         <AppRoutes />
       </div>
