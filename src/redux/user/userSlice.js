@@ -3,25 +3,27 @@ import { BASE_URL } from 'utils/constants';
 
 const { createSlice, createAsyncThunk } = require('@reduxjs/toolkit');
 
-// export const getCategories = createAsyncThunk(
-//   'categories/getCategories',
-//   async (_, thunkAPI) => {
-//     try {
-//       const response = await axios(`${BASE_URL}/categories`);
-//       return response.data;
-//     } catch (error) {
-//       console.log(error);
-//       return thunkAPI.rejectWithValue(error);
-//     }
-//   }
-// );
+export const createUser = createAsyncThunk(
+  'users/createUser',
+  async (body, thunkAPI) => {
+    try {
+      const response = await axios(`${BASE_URL}/users`, body);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    currentUser: [],
+    currentUser: null,
     cart: [],
     isLoading: false,
+    formType: 'signup',
+    showForm: false
   },
   reducers: {
     addItemToCart: (state, { payload }) => {
@@ -36,15 +38,18 @@ const userSlice = createSlice({
       } else newCart.push({ ...payload, quantity: 1 });
       state.cart = newCart;
     },
+    toggleForm: (state, {payload}) => {
+      state.showForm = payload;
+    }
   },
   extraReducers: builder => {
     // builder.addCase(getCategories.pending, (state) => {
     //     state.isLoading = true;
     // });
-    // builder.addCase(getCategories.fulfilled, (state, action) => {
-    //     state.list = action.payload;
-    //     state.isLoading = false;
-    // });
+    builder.addCase(createUser.fulfilled, (state, {payload}) => {
+        state.currentUser = payload;
+        state.isLoading = false;
+    });
     // builder.addCase(getCategories.rejected, (state) => {
     //     state.list = false;
     //     console.log('ERROR CATEGORIES SLICE');
@@ -52,6 +57,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { addItemToCart } = userSlice.actions;
+export const { addItemToCart, toggleForm } = userSlice.actions;
 
 export default userSlice.reducer;
