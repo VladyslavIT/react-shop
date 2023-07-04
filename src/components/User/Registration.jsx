@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { toggleForm } from 'redux/user/userSlice';
+import { createUser, toggleForm } from 'redux/user/userSlice';
 
 import styles from '../../styles/User.module.css';
 
@@ -17,17 +17,26 @@ const Registration = () => {
     setValues({ ...values, [name]: value });
   };
 
-
   const onClose = () => {
     dispatch(toggleForm(false));
   };
+  
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    const isNotEmpty = Object.values(values).every((value) => value);
+
+    if (!isNotEmpty) return;
+
+    dispatch(createUser(values));
+    onClose();
+  };
+
+ 
 
   return (
     <div className={styles.wrapper}>
-      <div
-        className={styles.close}
-        onClick={onClose}
-      >
+      <div className={styles.close} onClick={onClose}>
         <svg className="icon">
           <use xlinkHref={`${process.env.PUBLIC_URL}/sprite.svg#close`} />
         </svg>
@@ -35,10 +44,7 @@ const Registration = () => {
 
       <div className={styles.title}>Sign Up</div>
 
-      <form
-        className={styles.form}
-        // onSubmit={handleSubmit}
-      >
+      <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.group}>
           <input
             type="email"
@@ -46,7 +52,7 @@ const Registration = () => {
             name="email"
             value={values.email}
             autoComplete="off"
-              onChange={handleChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -58,7 +64,7 @@ const Registration = () => {
             name="name"
             value={values.name}
             autoComplete="off"
-              onChange={handleChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -70,7 +76,7 @@ const Registration = () => {
             name="password"
             value={values.password}
             autoComplete="off"
-              onChange={handleChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -82,7 +88,7 @@ const Registration = () => {
             name="avatar"
             value={values.avatar}
             autoComplete="off"
-              onChange={handleChange}
+            onChange={handleChange}
             required
           />
         </div>
