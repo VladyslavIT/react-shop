@@ -16,6 +16,35 @@ export const createUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk(
+  'users/loginUser',
+  async (body, thunkAPI) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/login`, body);
+      const login = await axios(`${BASE_URL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${response.data.access_token}` },
+      });
+      return login.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  'users/updateUser',
+  async (body, thunkAPI) => {
+    try {
+      const response = await axios.put(`${BASE_URL}/users/${body.id}`, body);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -23,7 +52,7 @@ const userSlice = createSlice({
     cart: [],
     isLoading: false,
     formType: 'signup',
-    showForm: false
+    showForm: false,
   },
   reducers: {
     addItemToCart: (state, { payload }) => {
@@ -38,25 +67,29 @@ const userSlice = createSlice({
       } else newCart.push({ ...payload, quantity: 1 });
       state.cart = newCart;
     },
-    toggleForm: (state, {payload}) => {
+    toggleForm: (state, { payload }) => {
       state.showForm = payload;
-    }
+    },
+    toggleFormType: (state, { payload }) => {
+      state.formType = payload;
+    },
   },
   extraReducers: builder => {
-    // builder.addCase(getCategories.pending, (state) => {
-    //     state.isLoading = true;
-    // });
-    builder.addCase(createUser.fulfilled, (state, {payload}) => {
-        state.currentUser = payload;
-        state.isLoading = false;
+    builder.addCase(createUser.fulfilled, (state, { payload }) => {
+      state.currentUser = payload;
+      state.isLoading = false;
     });
-    // builder.addCase(getCategories.rejected, (state) => {
-    //     state.list = false;
-    //     console.log('ERROR CATEGORIES SLICE');
-    // });
+    builder.addCase(loginUser.fulfilled, (state, { payload }) => {
+      state.currentUser = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(updateUser.fulfilled, (state, { payload }) => {
+      state.currentUser = payload;
+      state.isLoading = false;
+    });
   },
 });
 
-export const { addItemToCart, toggleForm } = userSlice.actions;
+export const { addItemToCart, toggleForm, toggleFormType } = userSlice.actions;
 
 export default userSlice.reducer;
