@@ -7,30 +7,37 @@ import Poster from 'components/Poster/Poster';
 import Products from 'components/Products/Products';
 import { filterByPrice } from 'redux/products/productsSlice';
 
+
 const Home = () => {
   const dispatch = useDispatch();
 
   const {
-    products: { list, filtered },
+    list: productList,
+    filtered: filteredProducts,
     categories,
-  } = useSelector(state => state);
+  } = useSelector(state => ({
+    list: state.products.list,
+    filtered: state.products.filtered,
+    categories: state.categories,
+  }));
 
   useEffect(() => {
-    if (!list.length) {
+    if (!productList.length) {
       return;
     }
     dispatch(filterByPrice(100));
-  }, [dispatch, list.length]);
+  }, [dispatch, productList.length]);
 
   return (
     <>
       <Poster />
-      <Products products={list} amount={5} title="Trending" />
+      <Products products={productList} amount={5} title="Trending" />
       <Categories products={categories.list} amount={5} title="Worth seeing" />
       <Banner />
-      <Products products={filtered} amount={5} title="Less than 100$" />
+      <Products products={filteredProducts} amount={5} title="Less than 100$" />
     </>
   );
 };
+
 
 export default Home;

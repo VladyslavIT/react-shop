@@ -21,7 +21,7 @@ const Header = () => {
   const [values, setValues] = useState({ name: 'Guest', avatar: avatar });
 
   const {data, isLoading} = useGetProductsQuery({ title: searchValue});
-  console.log(data);
+
 
   useEffect(() => {
     if (!currentUser) return;
