@@ -15,19 +15,20 @@ const SingleProduct = () => {
 
   const { data, isLoading, isFetching, isSuccess } = useGetProductQuery({ id });
 
-  const { related } = useSelector(({ products }) => products);
+  const { list, related } = useSelector(({ products }) => products);
 
   useEffect(() => {
-    if (!isLoading && !isFetching && !isSuccess) {
+    if (!isFetching && !isLoading && !isSuccess) {
       navigate(ROUTES.HOME);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isFetching, isSuccess]);
 
   useEffect(() => {
-    if (data) {
-      dispatch(getRelatedProducts(data.category.id));
-    }
-  }, [data]);
+    if (!data || !list.length) return;
+
+    dispatch(getRelatedProducts(data.category.id));
+  }, [data, dispatch, list.length]);
 
   return !data ? (
     <section className="preloader"> Loading...</section>
